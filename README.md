@@ -1,6 +1,6 @@
 # ArtStation Scraper
 
-This is my personal project created to download images from [ArtStation](https://www.artstation.com/) website. The program will download artworks from specified artists to specified download location. In the download location, the program will create and name directories using the artist names, then save the artworks to the corresponding directories. When running this program, it will check each directory to see if update is needed such that only new uploads will be downloaded.
+This is my personal project created to download images from [ArtStation](https://www.artstation.com/) website. The program will download artworks from specified artists to specified download directory. In the download directory, the program will create and name subdirectories using the artist names, then save artworks to the corresponding subdirectories. For each artwork, the file modification time are set in order from newest to oldest so that you can sort files by modified date. Lastly, when running this program, it will check each artist directory to see if an update is needed such that only new uploads will be downloaded.
 
 ![alt text](doc/download.gif?raw=true "download")
 
