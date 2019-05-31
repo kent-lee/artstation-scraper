@@ -6,7 +6,15 @@ from lib import utils
 
 def download_artists(api, config):
     start_time = time.time()
-    result = api.save_artists(config.artists, config.save_dir)
+    print(f"\nthere are {len(config.artists)} artists\n")
+    result = []
+    for artist_id, artwork_id in config.artists.items():
+        files = api.save_artist(artist_id, config.save_dir, artwork_id)
+        if not files:
+            continue
+        config.update_artist(artist_id, files["id"][0])
+        result.append(files)
+    result = utils.counter(result)
     duration = time.time() - start_time
     size_mb = result["size"] / 1048576
     print("\nSUMMARY")

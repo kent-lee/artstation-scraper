@@ -26,38 +26,37 @@ class Config:
         save_dir = os.path.normpath(save_dir)
         self._data["save_directory"] = save_dir
 
+    def update_artist(self, artist_id, value):
+        self._data["artists"][artist_id] = value
+
     @property
     def artists(self):
         return self._data["artists"]
 
     def add_artists(self, artist_ids):
         for id in artist_ids:
-            if id not in self.artists:
-                try:
-                    self.api.artist(id)
-                    self.artists.append(id)
-                except:
-                    print(f"Artist {id} does not exist")
-            else:
-                print(f"Artist {id} already exists in config file")
+            try:
+                self.api.artist(id)
+                self.artists.setdefault(id, None)
+            except:
+                print(f"Artist {id} does not exist")
 
     def delete_artists(self, artist_ids):
         if "all" in artist_ids:
-            artist_ids = self.artists.copy()
+            artist_ids = self.artists.keys()
         for id in artist_ids:
-            if id in self.artists:
-                self.artists.remove(id)
-                artist_name = self.api.artist(id)["name"]
-                utils.remove_dir(self.save_dir, artist_name)
+            if id in self.artists.keys():
+                self.artists.pop(id, None)
+                utils.remove_dir(self.save_dir, id)
             else:
-                print(f"Artist {id} does not exist in config file")
+                print(f"Artist {id} does not exist")
 
     def clear_artists(self, artist_ids):
         if "all" in artist_ids:
-            artist_ids = self.artists.copy()
+            artist_ids = self.artists.keys()
         for id in artist_ids:
-            if id in self.artists:
-                artist_name = self.api.artist(id)["name"]
-                utils.remove_dir(self.save_dir, artist_name)
+            if id in self.artists.keys():
+                self.artists[id] = None
+                utils.remove_dir(self.save_dir, id)
             else:
-                print(f"Artist {id} does not exist in config file")
+                print(f"Artist {id} does not exist")
