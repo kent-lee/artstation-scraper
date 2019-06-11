@@ -10,6 +10,7 @@ class Config:
         self.file_path = file_path
         self._data = utils.load_json(file_path)
         self._data["save_directory"] = os.path.normpath(self._data["save_directory"])
+        self._data["artists"] = list(dict.fromkeys(self._data["artists"]))
 
     def print(self):
         utils.print_json(self._data)
@@ -26,37 +27,36 @@ class Config:
         save_dir = os.path.normpath(save_dir)
         self._data["save_directory"] = save_dir
 
-    def update_artist(self, artist_id, value):
-        self._data["artists"][artist_id] = value
-
     @property
     def artists(self):
         return self._data["artists"]
 
     def add_artists(self, artist_ids):
         for id in artist_ids:
-            try:
-                self.api.artist(id)
-                self.artists.setdefault(id, None)
-            except:
-                print(f"Artist {id} does not exist")
+            if id not in self.artists:
+                try:
+                    self.api.artist(id)
+                    self.artists.append(id)
+                except:
+                    print(f"Artist {id} does not exist")
+            else:
+                print(f"Artist {id} already exists in config file")
 
     def delete_artists(self, artist_ids):
         if "all" in artist_ids:
-            artist_ids = self.artists.keys()
+            artist_ids = self.artists.copy()
         for id in artist_ids:
-            if id in self.artists.keys():
-                self.artists.pop(id, None)
-                utils.remove_dir(self.save_dir, id)
+            if id in self.artists:
+                self.artists.remove(id)
+                utils.remove_dir(self.save_dir, str(id))
             else:
-                print(f"Artist {id} does not exist")
+                print(f"Artist {id} does not exist in config file")
 
     def clear_artists(self, artist_ids):
         if "all" in artist_ids:
-            artist_ids = self.artists.keys()
+            artist_ids = self.artists.copy()
         for id in artist_ids:
-            if id in self.artists.keys():
-                self.artists[id] = None
-                utils.remove_dir(self.save_dir, id)
+            if id in self.artists:
+                utils.remove_dir(self.save_dir, str(id))
             else:
-                print(f"Artist {id} does not exist")
+                print(f"Artist {id} does not exist in config file")

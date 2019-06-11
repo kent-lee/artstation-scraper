@@ -25,9 +25,9 @@ def remove_dir(*args):
     dir_path = os.path.join(*args)
     shutil.rmtree(dir_path, ignore_errors=True)
 
-def file_names(*args, separator=" "):
+def file_names(*args, pattern):
     dir_path = os.path.join(*args)
-    return {*[f.partition(separator)[0] for f in os.listdir(dir_path)]}
+    return {*[re.search(pattern, f)[1] for f in os.listdir(dir_path)]}
 
 def valid_file_name(s):
     return re.sub(r"(?u)[\\/\:\*\?\"\<\>\|]", "", s)
