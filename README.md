@@ -1,6 +1,6 @@
 # ArtStation Scraper
 
-This is my personal project created to download images from [ArtStation](https://www.artstation.com/) website. The program will download artworks from specified artists to specified download directory. In the download directory, the program will create and name subdirectories using the artist names, then save artworks to the corresponding subdirectories. For each artwork, the file modification time are set in order from newest to oldest so that you can sort files by modified date. Lastly, when running this program, it will check each artist directory to see if an update is needed such that only new uploads will be downloaded.
+This is my personal project created to download images from [ArtStation](https://www.artstation.com/) website. The program will download artworks from specified artists to specified download directory. In the download directory, the program will create and name subdirectories using the artist IDs, then save artworks to the corresponding subdirectories. For each artwork, the file modification time are set in order from newest to oldest so that you can sort files by modified date. Lastly, when running this program, it will check each artist directory to see if an update is needed such that only new uploads will be downloaded.
 
 ![alt text](doc/download.gif?raw=true "download")
 
@@ -78,7 +78,15 @@ python main.py -c all -t 24 -r
 
     - Solution 2: use normal URL and parse the plain HTML to get the information. The trick is to use the artist's website instead of the portfolio page, as the latter is generated dynamically from the AJAX request and thus contains no valuable content.
 
-2. update mechanism
+2. invalid folder name. I originally planned to name subdirectories using the artist names, but there are two problems with this approach: (1) if the artist names contain special characters, the program may not be able to find the folder path (depending on the OS. For example, in Windows, the trailing `.` character in folder name will be removed automatically); hence terminated with errors. (2) if the artists change their names, the program will leave multiple directories pointing to the same artists.
+
+    - Solution: use artist IDs as the folder names
+
+3. file duplicate issue. In ArtStation, artists can name their artworks with identical file names, which causes the program to overwrite downloaded files.
+
+    - Solution: append artwork ID to each file name
+
+4. update mechanism
 
     - Attempt: download artworks from newest to oldest until an existing file is found on the disk. This does not work well with the multi-threading implementation, as it makes the program a lot more complicated in order to deal with thread stopping condition
 
