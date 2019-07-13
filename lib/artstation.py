@@ -36,7 +36,7 @@ class ArtStationAPI:
             "url": res.url,
             "name": re.search(r"\"og:title\" content=\"(.+)\"", html)[1],
             "description": re.search(r"\"og:description\" content=\"(.+)\"", html)[1],
-            "projects": re.findall(r"a href=\"/projects/(.+?)\"", html)
+            "projects": re.findall(r"href=\"/projects/(.+?)\"", html)
         }
         return data
     
